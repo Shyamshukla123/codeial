@@ -10,5 +10,5 @@ router.get('/', homeController.home);
 
 router.use('/users', require('./users'));
 
-console.log(' inside the router file');
+// console.log(' inside the router file');
 module.exports = router;
