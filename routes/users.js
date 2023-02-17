@@ -7,14 +7,8 @@ router.get('/sign-in', userController.signIn);
 router.get('/sign-up', userController.signUp);
 
 router.post('/create', userController.create);
+router.post('/create-session', userController.createSession);
 
-
-// const profileController = require('../controllers/profile');
-
-// router.get('/profile', profileController.profile);
-
-// const postController = require('../controllers/post');
-
-// router.get('/post', postController.post);
-
+router.get('/profile', userController.profile);
+router.get('/close-session', userController.closeSession);
 module.exports = router;
