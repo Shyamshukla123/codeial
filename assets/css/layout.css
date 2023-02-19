@@ -1,5 +1,8 @@
-body a {
-  text-decoration: none;
+body {
+    margin: 0;
+    /* text-align: center; */
 }
 
-/*# sourceMappingURL=layout.css.map */
+body #layout-main {
+    height: 100%;
+}
