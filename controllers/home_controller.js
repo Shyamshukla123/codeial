@@ -1,7 +1,54 @@
 const Post = require('../models/post');
+const User = require('../models/user');
+module.exports.home = async function(req, res) {
+    
+    try{
+        // populate the user of each post
+    let posts= await Post.find({})
+    .sort('-createdAt')
+    .populate('user')
+    .populate({
+        path: 'comments',
+        populate: {
+            path: 'user',
+        }
+    });
 
-module.exports.home = function(req, res) {
-    // to print cookies
+    let users= await User.find({}) ;
+
+        return res.render('home', {
+            title: "home",
+            posts: posts,
+            all_users: users,
+        })
+    }catch(err){
+        console.log('Error ',err);
+        return ;
+    }
+    
+        // earlier 
+    // Post.find({})
+    //     .populate('user')
+    //     .populate({
+    //         path: 'comments',
+    //         populate: {
+    //             path: 'user',
+    //         }
+    //     })
+    //     .exec(function(err, posts) {
+    //         User.find({}, function(err, users) {
+    //             return res.render('home', {
+    //                 title: "home",
+    //                 posts: posts,
+    //                 all_users: users,
+    //             })
+    //         })
+
+    //     })
+}
+
+//  to print cookies
+
     // console.log(req.cookies);
     // to change the cookie
     // res.cookie('user_id', 5);
@@ -12,17 +59,3 @@ module.exports.home = function(req, res) {
     //         posts: posts,
     //     })
     // })
-
-    // populate the user of each post
-    Post.find({}).populate('user').exec(function(err, posts) {
-        return res.render('home', {
-            title: "home",
-            posts: posts,
-        })
-    })
-
-
-
-
-    // return res.end('<h1> express is connected with controller</h1>');
-}

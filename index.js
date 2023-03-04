@@ -7,11 +7,17 @@ const session = require('express-session');
 const passport = require('passport')
 const passportLocal = require('./config/passport-local-strategy');
 
-const MongoStore = require('connect-mongo');
+const passportJWT =require('./config/passport-jwt-strategy');
 
+const MongoStore = require('connect-mongo');
+const flash= require('connect-flash');
+const custMware= require('./config/middleware');
+
+const User =require('./models/user')
 
 app.use(express.urlencoded());
 app.use(cookieParser());
+
 
 
 const expressLayouts = require('express-ejs-layouts');
@@ -21,6 +27,8 @@ const { urlencoded } = require('express');
 app.use(express.static('./assets'));
 app.use(expressLayouts)
 
+// for uplaoded folder view
+app.use('/uploads', express.static(__dirname+'/uploads'));
 
 app.set('layout extractStyles', true);
 app.set('layout extractScripts', true);
@@ -31,8 +39,11 @@ app.set('layout extractScripts', true);
 app.set('view engine', 'ejs');
 app.set('views', './views');
 
-// monoStore is used to store session cookie in the db
 
+
+
+
+// monoStore is used to store session cookie in the db
 app.use(session({
     name: "codiel",
     // TODO  change the secret before deployment
@@ -56,8 +67,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticateUser);
-
-
+app.use(flash());
+app.use(custMware.setFlash);
 // use express router
 app.use('/', require('./routes/index'));
 
