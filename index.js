@@ -6,9 +6,8 @@ const port = 8000;
 const session = require('express-session');
 const passport = require('passport')
 const passportLocal = require('./config/passport-local-strategy');
-
 const passportJWT =require('./config/passport-jwt-strategy');
-
+const passportGoogle= require('./config/passport-google-oauth2-strategy');
 const MongoStore = require('connect-mongo');
 const flash= require('connect-flash');
 const custMware= require('./config/middleware');
@@ -17,6 +16,31 @@ const User =require('./models/user')
 
 app.use(express.urlencoded());
 app.use(cookieParser());
+
+
+// set up th chat server to  be used with socket.io for chat engine
+var io =require('socket.io')(80,{
+    cors:{
+        origin:"*",
+        methods:["GET","POST"]
+        // origin:"http://localhost:5000"
+    }
+});
+io.on('connection',function(sockect){
+    // "on" is used to recieve the message or for listening
+    sockect.on("join_room",function(data){
+        console.log("connected to chat engine",data);
+        sockect.join(data.chatroom);
+
+        io.in(data.chatroom).emit('user_joined',data);
+    })
+
+        sockect.on('send_message',function(data){
+            console.log("message send",data);
+            io.in(data.chatroom).emit('receive_message',data);
+        })
+    // broadcat is used to send  mesage to all expect itself( eg. group chat)
+})
 
 
 
@@ -43,7 +67,7 @@ app.set('views', './views');
 
 
 
-// monoStore is used to store session cookie in the db
+// mongoStore is used to store session cookie in the db
 app.use(session({
     name: "codiel",
     // TODO  change the secret before deployment

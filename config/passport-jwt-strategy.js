@@ -13,7 +13,7 @@ passport.use(new JWTStrategy(opts, function(jwtPayLoad,done){
             console.log("Error in finding user from jwt",err);
             return;
         }
-        console.log(user);
+        // console.log(user);
         if(user){
             return done(null,user);
         }else{
